@@ -119,6 +119,9 @@ class CarState(CarStateBase):
     ret.steerFaultTemporary = cp.vl["EPS_STATUS"]["LKA_STATE"] in TEMP_STEER_FAULTS
     ret.steerFaultPermanent = cp.vl["EPS_STATUS"]["LKA_STATE"] in PERM_STEER_FAULTS
 
+    # Copying Inigo code for read messege from DBC and add to carstate
+    ret.accelerationCommand = (cp.vl["Message_Acceleration_Command"]["Acceleration_Command__mps2"]
+
     if self.CP.steerControlType == SteerControlType.angle:
       ret.steerFaultTemporary = ret.steerFaultTemporary or cp.vl["EPS_STATUS"]["LTA_STATE"] in TEMP_STEER_FAULTS
       ret.steerFaultPermanent = ret.steerFaultPermanent or cp.vl["EPS_STATUS"]["LTA_STATE"] in PERM_STEER_FAULTS
@@ -191,6 +194,7 @@ class CarState(CarStateBase):
   def get_can_parsers(CP):
     pt_messages = [
       ("BLINKERS_STATE", float('nan')),
+      ("Message_Acceleration_Command", 50) # add info on accel message number is Hz expected
     ]
 
     return {
